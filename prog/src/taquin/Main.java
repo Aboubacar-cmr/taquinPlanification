@@ -6,7 +6,7 @@ public class Main {
         monde.showState();
         monde.searcheActions();
         monde.getListActions();
-        System.out.println("-----------------suivant------------------------");
+        System.out.println("------------suivant après action1-------------");
 
         // ----------------------------------
         monde = monde.apply(monde.getlistActions().get(0));

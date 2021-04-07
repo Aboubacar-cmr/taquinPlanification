@@ -2,9 +2,9 @@ package taquin;
 
 public class Action {
 
-    private int value;
     private Position positionStart;
     private Position positionEnd;
+    private int cost = 1;
     
 
     public Action(Position posStart, Position posEnd){
@@ -20,8 +20,8 @@ public class Action {
         return this.positionEnd;
     }
 
-    public int getValue(){
-        return this.value;
+    public int getCost(){
+        return this.cost;
     }
 
     @Override
