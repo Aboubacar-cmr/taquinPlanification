@@ -1,22 +1,24 @@
 package taquin;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Random;
 
 public class State{
 
     private int[][]  grille;
+    private int[][] grilleBut = new int[3][3];
     private int longueur;
     private int largeur;
-    private ArrayList<Action> listeActions = new ArrayList<>();
+    
 
     public State(int longueur,int largeur,boolean init){
         this.longueur = longueur;
         this.largeur = largeur;
+        this.grilleB();
         this.grille = new int[this.longueur][this.largeur];
         if(init){
-            this.init();
+            this.initP();
         }
     }
 
@@ -25,17 +27,23 @@ public class State{
      * @return
      */
     public boolean satisfie(){
-        int x = 1;
         for (int i = 0; i < this.longueur; i++) {
             for (int j = 0; j <this.largeur;j++) {
-                if(this.grille[i][j] == x){
-                    x++;
-                }else{
+                if(this.grille[i][j] != this.grilleBut[i][j]){
                     return false;
                 }
             }
         }
         return true;
+    }
+
+
+
+    public boolean satisfie2(Object obj){
+       if(this.equals(obj)){
+           return true;
+       }
+       return false;
     }
 
     /**
@@ -65,29 +73,22 @@ public class State{
     /**
      * Méthode permettant de trouver tous les actions possible sur un monde
      */
-    public void searcheActions(){
+    public ArrayList<Action> searcheActions(){
+        ArrayList<Action> listeActions = new ArrayList<>();
         for (int i = 0; i < this.longueur; i++) {
             for (int j = 0; j < this.largeur; j++) {
                 if( verifG(i, j)){
-                    this.listeActions.add(new Action( new Position(i, j), new Position(i,(j-1) )) );
+                    listeActions.add(new Action( new Position(i, j), new Position(i,(j-1) )) );
                 }else if(verifD(i, j)){
-                    this.listeActions.add(new Action(new Position(i, j), new Position(i,(j+1))) );
+                    listeActions.add(new Action(new Position(i, j), new Position(i,(j+1))) );
                 }else if(verifH(i, j)){
-                    this.listeActions.add(new Action(new Position(i, j), new Position((i-1),j)) );
+                    listeActions.add(new Action(new Position(i, j), new Position((i-1),j)) );
                 }else if(verifB(i,j)){
-                    this.listeActions.add(new Action(new Position(i, j), new Position((i+1),j)) );
+                    listeActions.add(new Action(new Position(i, j), new Position((i+1),j)) );
                 }
             }
         }
-    }
-
-    /**
-     * Méthode permettat d'affcher la liste des actions
-     */
-    public void getListActions(){
-        for (int i = 0; i < this.listeActions.size(); i++) {
-            System.out.println(this.listeActions.get(i));
-        }
+        return listeActions;
     }
 
     /**
@@ -172,6 +173,37 @@ public class State{
     }
 
     /**
+     * etat initial pour le teste
+     */
+    public void initP(){
+        this.grille[0][0] = 1;
+        this.grille[0][1] = 2;
+        this.grille[0][2] = 3;
+        this.grille[1][0] = 4;
+        this.grille[1][1] = 5;
+        this.grille[1][2] = 6;
+        this.grille[2][0] = 7;
+        this.grille[2][1] = 0;
+        this.grille[2][2] = 8;
+    }
+
+    /**
+     * Etat but
+     */
+    public void grilleB(){
+        this.grilleBut[0][0] = 1;
+        this.grilleBut[0][1] = 2;
+        this.grilleBut[0][2] = 3;
+        this.grilleBut[1][0] = 4;
+        this.grilleBut[1][1] = 5;
+        this.grilleBut[1][2] = 6;
+        this.grilleBut[2][0] = 7;
+        this.grilleBut[2][1] = 8;
+        this.grilleBut[2][2] = 0;
+    }
+
+    /**
+     * [util] : Une méthode à qui je delegue une tache
      * cette méthode permet de remplir une liste d'entier d'une taille de l*L
      * @return : la liste contenant les entiers de 1 à l*L
      */
@@ -183,7 +215,44 @@ public class State{
         return entier;
     }
 
-    public ArrayList<Action> getlistActions(){
-        return this.listeActions;
+
+    public int getLongueur(){
+        return this.longueur;
     }
+
+    public int getLargeur(){
+        return this.largeur;
+    }
+
+    public int[][] getGrille(){
+        return this.grille;
+    }
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + Arrays.deepHashCode(grille);
+		return result;
+	}
+
+    /**
+     * la redefinition de cette méthode permet de comparer si deux monde sont pareil
+     * Deux monde son egaux si leur grillle sont égaux
+     */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		State other = (State) obj;
+		if (!Arrays.deepEquals(grille, other.grille))
+			return false;
+		return true;
+	}
+    
+    
 }
