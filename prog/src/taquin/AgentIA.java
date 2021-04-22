@@ -1,7 +1,7 @@
 package taquin;
 
 import java.util.*;
-import java.util.Stack;
+
 
 /**
  * Cette à pour but d'implementer les algorithme d'intelligence arttificielle pour
@@ -115,6 +115,86 @@ public class AgentIA {
         return actions;
     }
     
+
+
+    public List<Action> djisktra(){
+        Map<State,Action> plan = new HashMap<>();
+
+        Map<State,Integer> distance_source = new HashMap<>();
+        distance_source.put(this.state,0);
+
+        Map<State,State> father = new HashMap<>();
+        father.put(this.state, null);
+
+        List<State> open = new ArrayList<>();
+        open.add(this.state);
+
+        List<State> goals = null;
+
+        while(!open.isEmpty()){
+
+            //prendre le noeud qui a la plus petite distance source  dans la map des distance
+            State instantiation = this.argmin(distance_source);
+            open.remove(instantiation);
+            if(instantiation.satisfie()){
+                goals.add(instantiation);
+            }
+            /**Pour toutes les actions de l'état initial */
+            for (Action  action : this.state.searcheActions()) {
+                State next  = this.state.apply(action);
+                if(!distance_source.containsKey(next)){
+                    distance_source.put(next, Integer.MAX_VALUE);
+                }
+                if(distance_source.get(next) > (distance_source.get(instantiation) + action.getCost())){
+                    distance_source.put(next,(distance_source.get(instantiation)  + action.getCost()));
+                    father.put(next, instantiation);
+                    plan.put(next, action);
+                    open.add(next);
+                }
+            }
+        }
+        if(goals.isEmpty()){
+            return null;
+        }else{
+            return dijkstra_plan(father,plan,goals,distance_source);
+        }
+    }
+
+    public List<Action> dijkstra_plan(Map<State,State> father,Map<State,Action> plan,List<State> goals,Map<State,Integer> distance_sr){
+        List<Action> actions = new ArrayList<>();
+        State goal = argmin(distance_sr);
+        while(goal != null){
+            if(plan.get(goal)!= null){
+                actions.add(plan.get(goal));
+                goal = father.get(goal);
+            }else{
+                break;
+            }
+           
+        }
+        System.out.println("yesss");
+        return actions;
+    }
+
+    /**
+     * Méthode permettant de trouver l'état qui à la plus petite distance source
+     * @param distance la liste des états avec leurs distance source
+     * @return Le sommet qui à la plus pétite distance source entre les sommets
+     */
+    public State argmin(Map<State,Integer> distance){
+        State instance = null;
+        Integer dist = Integer.MAX_VALUE;
+        for (Map.Entry mapentry : distance.entrySet()) {
+
+            Integer val = (Integer)mapentry.getValue();
+            if(val<dist){
+                dist = val;
+                instance = (State)mapentry.getKey();
+            } 
+
+        }
+        return instance;
+    }
 
     
 }

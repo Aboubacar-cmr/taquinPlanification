@@ -18,7 +18,7 @@ public class State{
         this.grilleB();
         this.grille = new int[this.longueur][this.largeur];
         if(init){
-            this.initP();
+            this.init();
         }
     }
 
@@ -254,5 +254,24 @@ public class State{
 		return true;
 	}
     
+    /**
+     * Cette méthode permet de trouver le nombre de piece male placer dans la grille
+     */
+    public int heuristique(){
+        int cpt = 0;
+        int valeur=0;
+        for (int i = 0; i < this.longueur; i++) {
+            for (int j = 0; j < this.largeur;j++) {
+                valeur++;
+                if(this.grille[i][j] != valeur){
+                    cpt+=1;
+                }
+            }
+        }
+        if(this.grille[this.longueur-1][this.largeur-1] == 0){
+            cpt -=1;
+        }
+        return cpt;
+    }
     
 }
