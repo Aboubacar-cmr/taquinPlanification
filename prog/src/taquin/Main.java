@@ -3,30 +3,21 @@ package taquin;
 import java.util.*;
 public class Main {
     public static void main(String[] args){
-        /**
-         * Instantiation du monde initial
-         */
-        State monde = new State(3,3,true);
-        monde.showState();
-        System.out.println("H : "+monde.heuristique());
-        System.out.println("#############################################################");
+    
+        System.out.println("--------------------Init--------------------------");
+        State init = new State(3,3,true);
+        init.showState();
 
-        /**
-         * Instantiation de l'agent intelligent
-         */
-        //AgentIA ia = new AgentIA(monde);
+        Astart agent = new Astart(init);
+        List<Action> plan = agent.agentAstart();
+        System.out.println(plan);
 
-        //List<Action> plan =ia.djisktra();
-        
-        //System.out.println(plan.size());
-    //    for (Action action : plan) {
-    //        monde = monde.apply(action);
-    //        monde.showState();
-    //        //System.out.println(action);
-    //        System.out.println("-----------------------------------");
-    //    }
-        
-
+        for(int i = plan.size()-1;i>=0;i--){
+            System.out.println("------------------------");
+            System.out.println(plan.get(i));
+            init = init.apply(plan.get(i));
+            init.showState();
+        }
 
     }
 }

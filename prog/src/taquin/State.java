@@ -4,46 +4,42 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 
-public class State{
+public class State implements Comparable<State>{
 
     private int[][]  grille;
     private int[][] grilleBut = new int[3][3];
     private int longueur;
     private int largeur;
+    private int distance_source = 0;
     
-
+    /**
+     * 
+     * @param longueur longeur de la grille
+     * @param largeur largeur de la grille
+     * @param init boolean permettant d'initialiser la grille si true 
+     */
     public State(int longueur,int largeur,boolean init){
         this.longueur = longueur;
         this.largeur = largeur;
         this.grilleB();
         this.grille = new int[this.longueur][this.largeur];
         if(init){
-            this.init();
+            this.initP();
         }
     }
 
     /**
      * Cette méthode permet de verifier si un état satisfait le but
-     * @return
+     * @return true si l'état but est attein false sinon
      */
-    public boolean satisfie(){
-        for (int i = 0; i < this.longueur; i++) {
-            for (int j = 0; j <this.largeur;j++) {
-                if(this.grille[i][j] != this.grilleBut[i][j]){
+    public boolean ISsatisfie(){
+       for (int i = 0; i < this.longueur; i++) {
+           for (int j = 0; j < this.largeur; j++) {
+                if(this.grille[i][j] != this.grilleBut[i][j])
                     return false;
-                }
-            }
-        }
-        return true;
-    }
-
-
-
-    public boolean satisfie2(Object obj){
-       if(this.equals(obj)){
-           return true;
+           }
        }
-       return false;
+       return true;
     }
 
     /**
@@ -176,15 +172,15 @@ public class State{
      * etat initial pour le teste
      */
     public void initP(){
-        this.grille[0][0] = 1;
-        this.grille[0][1] = 2;
-        this.grille[0][2] = 3;
-        this.grille[1][0] = 4;
-        this.grille[1][1] = 5;
-        this.grille[1][2] = 6;
-        this.grille[2][0] = 7;
-        this.grille[2][1] = 0;
-        this.grille[2][2] = 8;
+        this.grille[0][0] = 4; //1
+        this.grille[0][1] = 1; //2
+        this.grille[0][2] = 0; //3
+        this.grille[1][0] = 7; //4
+        this.grille[1][1] = 6; //5
+        this.grille[1][2] = 3; //6
+        this.grille[2][0] = 5; //7
+        this.grille[2][1] = 2; //8
+        this.grille[2][2] = 8; //9
     }
 
     /**
@@ -228,6 +224,10 @@ public class State{
         return this.grille;
     }
 
+    public int[][] getGrilleBut(){
+        return this.grilleBut;
+    }
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -254,24 +254,22 @@ public class State{
 		return true;
 	}
     
-    /**
-     * Cette méthode permet de trouver le nombre de piece male placer dans la grille
-     */
-    public int heuristique(){
-        int cpt = 0;
-        int valeur=0;
-        for (int i = 0; i < this.longueur; i++) {
-            for (int j = 0; j < this.largeur;j++) {
-                valeur++;
-                if(this.grille[i][j] != valeur){
-                    cpt+=1;
-                }
-            }
-        }
-        if(this.grille[this.longueur-1][this.largeur-1] == 0){
-            cpt -=1;
-        }
-        return cpt;
+    
+
+    public int getDistance_source(){
+        return this.distance_source;
     }
+
+
+    @Override
+    public int compareTo(State etat){
+        if(this.getDistance_source() > etat.getDistance_source())
+            return 1;
+        else if(this.getDistance_source() < etat.getDistance_source())
+            return -1;
+        return 0;
+
+    }
+
     
 }
